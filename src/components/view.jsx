@@ -1,8 +1,5 @@
 import React, { Component } from 'react'
 
-import image from '../images/bg.jpg'
-import video from '../video/bg.mp4'
-
 const viewStyle = {
   position: 'absolute',
   top: 0,
@@ -35,6 +32,8 @@ const videoStyle = {
 }
 
 const containerStyle = {
+  display: 'flex',
+  flexDirection: 'column',
   position: 'absolute',
   top: 0,
   right: 0,
@@ -69,13 +68,13 @@ export default class View extends Component {
     $bg.addEventListener('load', () => {
       this.setState({
         src: {
-          image: image,
-          video: video
+          image: this.props.image,
+          video: this.props.video
         }
       })
       $bg = null
     })
-    $bg.src = image
+    $bg.src = this.props.image
   }
   resize() {
     let width = window.innerWidth
@@ -119,7 +118,12 @@ export default class View extends Component {
     return (
       <div style={style.view}>
         <div style={style.image} />
-        <video style={style.video} src={this.state.src.video} autoPlay loop />
+        <video
+          style={style.video}
+          src={this.state.src.video}
+          autoPlay
+          loop
+        />
         <div style={style.container}>
           {this.props.children}
         </div>
