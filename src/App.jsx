@@ -14,7 +14,7 @@ export default class App extends Component {
   render() {
     return (
       <MuiThemeProvider muiTheme={getMuiTheme(lightBaseTheme)}>
-        <View>sfsdfsd</View>
+        <View></View>
       </MuiThemeProvider>
     )
   }

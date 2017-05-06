@@ -1,33 +1,40 @@
 import React, { Component } from 'react'
 
-import bgImage from '../images/bg.jpg'
-import bgVideo from '../video/bg.mp4'
+import image from '../images/bg.jpg'
+import video from '../video/bg.mp4'
 
-const bgImageStyle = {
-  display: 'block',
-  position: 'fixed',
-  top: 0,
-  right: 0,
-  bottom: 0,
-  left: 0,
-  overflow: 'hidden',
-  backgroundSize: 'cover',
-  backgroundRepeat: 'no-repeat'
-}
-
-const bgVideoStyle = {
-  display: 'block',
-  minWidth: '100%',
-  minHeight: '100%',
+const viewStyle = {
   position: 'absolute',
   top: 0,
   right: 0,
   bottom: 0,
   left: 0,
-  opacity: 0
+  overflow: 'hidden',
+  backgroundColor: '#666'
 }
 
-const bgContainerStyle = {
+const imageStyle = {
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  backgroundSize: 'cover',
+  minWidth: '100%',
+  minHeight: '100%',
+  opacity: 0,
+  transition: 'opacity 0.5s cubic-bezier(0,0.3,1,0)'
+}
+
+const videoStyle = {
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  minWidth: '100%',
+  minHeight: '100%',
+  opacity: 0,
+  transition: 'opacity 0.3s cubic-bezier(0,0.3,1,0) 0.4s'
+}
+
+const containerStyle = {
   position: 'absolute',
   top: 0,
   right: 0,
@@ -38,39 +45,82 @@ const bgContainerStyle = {
 export default class View extends Component {
   constructor() {
     super()
-    let bg = new Image()
     this.state = {
-      bgImageStyle,
-      bgVideoStyle
+      src: {
+        image: null,
+        video: null
+      },
+      width: 0,
+      height: 0
     }
-    bg.addEventListener('load', () => {
-      const state = this.state
-      state.bgImage = bgImage
-      state.bgVideo = bgVideo
-      this.setState(state)
-      bg = null
+    this.resize = this.resize.bind(this)
+    this.load = this.load.bind(this)
+  }
+  componentDidMount() {
+    window.addEventListener('resize', this.resize)
+    this.resize()
+    this.load()
+  }
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.resize)
+  }
+  load() {
+    let $bg = new Image()
+    $bg.addEventListener('load', () => {
+      this.setState({
+        src: {
+          image: image,
+          video: video
+        }
+      })
+      $bg = null
     })
-    bg.src = bgImage
+    $bg.src = image
+  }
+  resize() {
+    let width = window.innerWidth
+    let height = window.innerHeight
+    if (width / height < 1920 / 1080) {
+      width = height * 1920 / 1080
+    } else {
+      height = width / 1920 * 1080
+    }
+    this.setState({
+      width: width,
+      height: height
+    })
   }
   render() {
-    let video = null
-    const {
-      bgImage,
-      bgVideo,
-      bgImageStyle,
-      bgVideoStyle
-    } = this.state
-
-    if (bgImage) {
-      bgImageStyle.backgroundImage = `url(${bgImage})`
+    const style = {
+      image: {
+        ...imageStyle,
+        width: `${this.state.width}px`,
+        height: `${this.state.height}px`
+      },
+      video: {
+        ...videoStyle,
+        width: `${this.state.width}px`,
+        height: `${this.state.height}px`
+      },
+      view: {
+        ...viewStyle
+      },
+      container: {
+        ...containerStyle
+      }
     }
-    if (bgVideo) {
-      bgVideoStyle.opacity = 1
+    if (this.state.src.image) {
+      style.image.backgroundImage = `url(${this.state.src.image})`
+      style.image.opacity = 1
+    }
+    if (this.state.src.video) {
+      style.video.opacity = 1
     }
     return (
-      <div style={{ ...bgImageStyle }}>
-        <video style={{ ...bgVideoStyle }} src={bgVideo} autoPlay loop></video>
-        <div style={bgContainerStyle}>
+      <div style={style.view}>
+        <div style={style.image} />
+        <video style={style.video} src={this.state.src.video} autoPlay loop />
+        <div style={style.container}>
           {this.props.children}
         </div>
       </div>

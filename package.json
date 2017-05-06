@@ -1,6 +1,7 @@
 {
   "name": "nsf-tab",
   "version": "0.1.0",
+  "description": "a new tab extension for chorme",
   "private": true,
   "scripts": {
     "start": "react-scripts start",
@@ -18,5 +19,6 @@
   },
   "devDependencies": {
     "react-scripts": "0.9.5"
-  }
+  },
+  "homepage": "./"
 }
