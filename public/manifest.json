@@ -17,5 +17,16 @@
   "author": "程刁",
   "chrome_url_overrides": {
     "newtab": "index.html"
-  }
+  },
+  "permissions": [
+    "management",
+    "bookmarks",
+    "history",
+    "unlimitedStorage",
+    "http://*/",
+    "https://*/",
+    "chrome://apps/",
+    "chrome://bookmarks/",
+    "chrome://history/"
+  ]
 }

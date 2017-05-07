@@ -1,96 +1,30 @@
 import React, { Component } from 'react'
 import { GridList, GridTile } from 'material-ui/GridList'
+import application from '../images/icons/application.png'
+import appstore from '../images/icons/appstore.png'
+import bookmark from '../images/icons/bookmark.png'
+import history from '../images/icons/history.png'
 
 const icons = [
   {
-    src: 'icon-0.png',
-    title: 'icon-0.png',
-    url: 'icon-0.png'
+    src: application,
+    title: '应用',
+    url: 'chrome://apps/'
   },
   {
-    src: 'icon-1.png',
-    title: 'icon-1.png',
-    url: 'icon-1.png'
+    src: appstore,
+    title: '应用商店',
+    url: 'https://chrome.google.com/webstore'
   },
   {
-    src: 'icon-2.png',
-    title: 'icon-2.png',
-    url: 'icon-2.png'
+    src: bookmark,
+    title: '书签',
+    url: 'chrome://bookmarks/'
   },
   {
-    src: 'icon-3.png',
-    title: 'icon-3.png',
-    url: 'icon-3.png'
-  },
-  {
-    src: 'icon-4.png',
-    title: 'icon-4.png',
-    url: 'icon-4.png'
-  },
-  {
-    src: 'icon-5.png',
-    title: 'icon-5.png',
-    url: 'icon-5.png'
-  },
-  {
-    src: 'icon-6.png',
-    title: 'icon-6.png',
-    url: 'icon-6.png'
-  },
-  {
-    src: 'icon-7.png',
-    title: 'icon-7.png',
-    url: 'icon-7.png'
-  },
-  {
-    src: 'icon-8.png',
-    title: 'icon-8.png',
-    url: 'icon-8.png'
-  },
-  {
-    src: 'icon-9.png',
-    title: 'icon-9.png',
-    url: 'icon-9.png'
-  },
-  {
-    src: 'icon-10.png',
-    title: 'icon-10.png',
-    url: 'icon-10.png'
-  },
-  {
-    src: 'icon-11.png',
-    title: 'icon-11.png',
-    url: 'icon-11.png'
-  },
-  {
-    src: 'icon-12.png',
-    title: 'icon-12.png',
-    url: 'icon-12.png'
-  },
-  {
-    src: 'icon-13.png',
-    title: 'icon-13.png',
-    url: 'icon-13.png'
-  },
-  {
-    src: 'icon-14.png',
-    title: 'icon-14.png',
-    url: 'icon-14.png'
-  },
-  {
-    src: 'icon-15.png',
-    title: 'icon-15.png',
-    url: 'icon-15.png'
-  },
-  {
-    src: 'icon-16.png',
-    title: 'icon-16.png',
-    url: 'icon-16.png'
-  },
-  {
-    src: 'icon-17.png',
-    title: 'icon-17.png',
-    url: 'icon-17.png'
+    src: history,
+    title: '历史记录',
+    url: 'chrome://history/'
   }
 ]
 
@@ -104,17 +38,29 @@ const gridListStyle = {
   width: 960
 }
 const gridTileStyle = {
-  width: 88,
-  height: 88,
+  width: 120,
+  height: 120,
   margin: '0 auto',
-  boxShadow: '0 10px 20px rgba(0,0,0,0.4)'
+  boxShadow: '0 10px 20px rgba(0,0,0,0.4)',
+  cursor: 'pointer'
+}
+const titleStyle = {
+}
+const iconStyle = {
+  width: '100%',
+  height: '100%'
 }
 
 export default class View extends Component {
   constructor() {
     super()
     this.state = {
-      cols: 6
+      cols: 5
+    }
+  }
+  click(proxy, icon) {
+    if (icon.url) {
+      window.location.href = icon.url
     }
   }
   render() {
@@ -128,18 +74,18 @@ export default class View extends Component {
       gridTile: {
         ...gridTileStyle
       },
-      titleStyle: {
-
+      title: {
+        ...titleStyle
       },
       icon: {
-
+        ...iconStyle
       }
     }
     return (
       <div style={style.grid}>
         <GridList
           cellHeight={120}
-          cols={6}
+          cols={this.state.cols}
           padding={10}
           style={style.gridList}
         >
@@ -147,11 +93,12 @@ export default class View extends Component {
             <GridTile
               key={`${icon.title}-${index}`}
               title={icon.title}
+              onClick={e => this.click(e, icon)}
               style={style.gridTile}
-              titleStyle={style.titleStyle}
+              titleStyle={style.title}
             >
               <img
-                src={`${this.props.host}/icons/${icon.src}`}
+                src={icon.src}
                 style={style.icon}
                 alt={icon.title}
               />

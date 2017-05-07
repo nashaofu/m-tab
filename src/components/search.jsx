@@ -8,48 +8,80 @@ const searchStyle = {
   alignSelf: 'center'
 }
 
-const floatingLabelStyle = {
-  color: '#fff'
+const hintStyle = {
+  color: 'rgba(255,255,255,0.7)',
+  width: '100%',
+  textAlign: 'center'
 }
 
 const inputStyle = {
-  color: '#fff'
+  color: '#fff',
+  textAlign: 'center'
 }
 
 const underlineFocusStyle = {
   borderBottomColor: '#fff'
 }
 
-const floatingLabelFocusStyle = {
-  color: 'rgba(255,255,255,0.6)'
-}
-
-const hintStyle = {
-  color: 'rgba(255,255,255,0.6)'
-}
-
 export default class View extends Component {
+  constructor() {
+    super()
+    this.state = {
+      value: '',
+      engine: 'Google',
+      engines: {
+        'Baidu': {
+          'url': 'https://www.baidu.com/s?wd='
+        },
+        'Google': {
+          'url': 'https://www.google.com/search?q='
+        },
+        'Bing': {
+          'url': 'https://www.bing.com/search?q=s'
+        }
+      }
+    }
+    this.change = this.change.bind(this)
+    this.keyDown = this.keyDown.bind(this)
+  }
+  change(proxy, value) {
+    this.setState({
+      value
+    })
+  }
+  keyDown(proxy, event) {
+    if (proxy.keyCode === 13) {
+      const engine = this.state.engines[this.state.engine]
+      window.location.href = `${engine.url}${this.state.value}`
+    }
+  }
   render() {
     const style = {
       search: {
         ...searchStyle
       },
-      floatingLabel: {
-        ...floatingLabelStyle
+      input: {
+        ...inputStyle
+      },
+      hint: {
+        ...hintStyle
+      },
+      underlineFocus: {
+        ...underlineFocusStyle
       }
     }
     return (
       <div style={style.search}>
         <TextField
           hintText="回车进行搜索"
-          floatingLabelText="搜索"
           type="search"
           fullWidth={true}
-          floatingLabelStyle={style.floatingLabel}
-          floatingLabelFocusStyle={floatingLabelFocusStyle}
-          inputStyle={inputStyle}
-          hintStyle={hintStyle}
-          underlineFocusStyle={underlineFocusStyle}
+          inputStyle={style.input}
+          hintStyle={style.hint}
+          underlineFocusStyle={style.underlineFocus}
+          onChange={this.change}
+          onKeyDown={this.keyDown}
+          value={this.state.value}
         />
       </div>
     )
