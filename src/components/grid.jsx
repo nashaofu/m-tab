@@ -1,107 +1,164 @@
 import React, { Component } from 'react'
 import { GridList, GridTile } from 'material-ui/GridList'
-import application from '../images/icons/application.png'
-import appstore from '../images/icons/appstore.png'
-import bookmark from '../images/icons/bookmark.png'
-import history from '../images/icons/history.png'
+import { addResizeListener, removeResizeListener } from '../js/resize'
 
 const icons = [
   {
-    src: application,
-    title: '应用',
-    url: 'chrome://apps/'
-  },
-  {
-    src: appstore,
     title: '应用商店',
+    icon: 'local_grocery_store',
     url: 'https://chrome.google.com/webstore'
   },
   {
-    src: bookmark,
+    title: '应用',
+    icon: 'apps',
+    url: 'chrome://apps/'
+  },
+  {
     title: '书签',
+    icon: 'bookmark',
     url: 'chrome://bookmarks/'
   },
   {
-    src: history,
     title: '历史记录',
+    icon: 'history',
     url: 'chrome://history/'
+  },
+  {
+    title: '下载',
+    icon: 'file_download',
+    url: 'chrome://downloads/'
+  },
+  {
+    title: '搜索',
+    icon: 'search',
+    url: '#'
   }
 ]
 
 const gridStyle = {
   display: 'flex',
+  flexGrow: 1,
   alignItems: 'center',
   maxWidth: '100%',
-  margin: '0 auto'
+  margin: '0 auto',
 }
-const gridListStyle = {
-  width: 960
-}
+
 const gridTileStyle = {
-  width: 120,
-  height: 120,
+  width: 100,
+  height: 100,
   margin: '0 auto',
   boxShadow: '0 10px 20px rgba(0,0,0,0.4)',
   cursor: 'pointer'
 }
-const titleStyle = {
-}
+
+
 const iconStyle = {
+  display: 'flex',
+  alignItems: 'center',
   width: '100%',
-  height: '100%'
+  height: '100%',
+  backgroundColor: 'rgba(240, 200, 20, 0.6)',
+  textAlign: 'center',
+  textDecoration: 'none',
+  outline: 'none'
+}
+
+const iconFontStyle = {
+  fontSize: 72,
+  color: '#fff',
+  margin: '0 auto'
 }
 
 export default class View extends Component {
   constructor() {
     super()
     this.state = {
-      cols: 5
+      cols: null,
+      padding: null
+    }
+    this.resize = this.resize.bind(this)
+    this.click = this.click.bind(this)
+  }
+  componentDidMount() {
+    addResizeListener(this.resize)
+    this.resize()
+  }
+  componentWillUnmount() {
+    removeResizeListener(this.resize)
+  }
+  resize() {
+    if (window.innerWidth < 420) {
+      this.setState({
+        cols: 2
+      })
+    } else if (window.innerWidth < 960) {
+      this.setState({
+        cols: 3,
+        maxWidth: 768
+      })
+    } else {
+      this.setState({
+        cols: 6,
+        maxWidth: 960
+      })
+    }
+
+    if (window.innerWidth < 480) {
+      this.setState({
+        padding: 20
+      })
+    } else if (window.innerWidth < 560) {
+      this.setState({
+        padding: 40
+      })
+    } else {
+      this.setState({
+        padding: 60
+      })
     }
   }
   click(proxy, icon) {
-    if (icon.url) {
-      window.location.href = icon.url
-    }
+    window.location.href = icon.url
   }
   render() {
     const style = {
       grid: {
-        ...gridStyle
+        ...gridStyle,
       },
       gridList: {
-        ...gridListStyle
+        maxWidth: this.state.maxWidth
       },
       gridTile: {
         ...gridTileStyle
       },
-      title: {
-        ...titleStyle
-      },
       icon: {
         ...iconStyle
+      },
+      iconFont: {
+        ...iconFontStyle
       }
     }
     return (
       <div style={style.grid}>
         <GridList
-          cellHeight={120}
+          cellHeight="auto"
           cols={this.state.cols}
-          padding={10}
+          padding={this.state.padding}
           style={style.gridList}
         >
           {icons.map((icon, index) => (
             <GridTile
               key={`${icon.title}-${index}`}
               title={icon.title}
-              onClick={e => this.click(e, icon)}
               style={style.gridTile}
-              titleStyle={style.title}
+              onClick={e => this.click(e, icon)}
             >
-              <img
-                src={icon.src}
-                style={style.icon}
-                alt={icon.title}
-              />
+              <div style={style.icon}>
+                <i
+                  className="material-icons"
+                  style={style.iconFont}
+                >{icon.icon}</i>
+              </div>
             </GridTile>
           ))}
         </GridList>

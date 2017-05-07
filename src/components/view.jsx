@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { addResizeListener, removeResizeListener } from '../js/resize'
 
 const viewStyle = {
   position: 'absolute',
@@ -56,12 +57,12 @@ export default class View extends Component {
     this.load = this.load.bind(this)
   }
   componentDidMount() {
-    window.addEventListener('resize', this.resize)
+    addResizeListener(this.resize)
     this.resize()
     this.load()
   }
   componentWillUnmount() {
-    window.removeEventListener('resize', this.resize)
+    removeResizeListener(this.resize)
   }
   load() {
     let $bg = new Image()

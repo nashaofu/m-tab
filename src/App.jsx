@@ -20,8 +20,8 @@ export default class App extends Component {
     return (
       <MuiThemeProvider muiTheme={getMuiTheme(lightBaseTheme)}>
         <View image={image} video={video}>
+          <Grid />
           <Search />
-          <Grid host="http://192.168.1.5:8080" />
         </View>
       </MuiThemeProvider>
     )

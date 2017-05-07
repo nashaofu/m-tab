@@ -1,11 +1,18 @@
 import React, { Component } from 'react'
 import TextField from 'material-ui/TextField'
+import { addResizeListener, removeResizeListener } from '../js/resize'
 
 const searchStyle = {
+  position: 'absolute',
+  right: 0,
+  left: 0,
+  textAlign: 'center'
+}
+
+const textFieldStyle = {
   width: 360,
   maxWidth: '100%',
-  margin: '30px auto',
-  alignSelf: 'center'
+  margin: '0 auto'
 }
 
 const hintStyle = {
@@ -27,6 +34,7 @@ export default class View extends Component {
   constructor() {
     super()
     this.state = {
+      top: null,
       value: '',
       engine: 'Google',
       engines: {
@@ -43,6 +51,29 @@ export default class View extends Component {
     }
     this.change = this.change.bind(this)
     this.keyDown = this.keyDown.bind(this)
+    this.resize = this.resize.bind(this)
+  }
+  componentDidMount() {
+    addResizeListener(this.resize)
+    this.resize()
+  }
+  componentWillUnmount() {
+    removeResizeListener(this.resize)
+  }
+  resize() {
+    if (window.innerWidth < 420) {
+      this.setState({
+        top: '10%'
+      })
+    } else if (window.innerWidth < 960) {
+      this.setState({
+        top: '14%'
+      })
+    } else {
+      this.setState({
+        top: '24%'
+      })
+    }
   }
   change(proxy, value) {
     this.setState({
@@ -58,7 +89,11 @@ export default class View extends Component {
   render() {
     const style = {
       search: {
-        ...searchStyle
+        ...searchStyle,
+        top: this.state.top
+      },
+      textField: {
+        ...textFieldStyle
       },
       input: {
         ...inputStyle
@@ -75,7 +110,7 @@ export default class View extends Component {
         <TextField
           hintText="回车进行搜索"
           type="search"
-          fullWidth={true}
+          style={style.textField}
           inputStyle={style.input}
           hintStyle={style.hint}
           underlineFocusStyle={style.underlineFocus}
