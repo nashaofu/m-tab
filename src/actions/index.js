@@ -1,6 +1,7 @@
-export const router = (router) => {
-  return {
-    type: 'ROUTER',
-    router
+export const setBg = (bg) => ({
+  type: 'SET_BG',
+  bg: {
+    image: bg.image,
+    video: bg.video
   }
-}
+})

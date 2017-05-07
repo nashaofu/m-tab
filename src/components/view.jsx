@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 import { addResizeListener, removeResizeListener } from '../js/resize'
 
+import image from '../images/bg.jpg'
+import video from '../video/bg.mp4'
+
 const viewStyle = {
   position: 'absolute',
   top: 0,
@@ -43,8 +46,8 @@ const containerStyle = {
 }
 
 export default class View extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {
       src: {
         image: null,
@@ -53,24 +56,46 @@ export default class View extends Component {
       width: 0,
       height: 0
     }
+
     this.resize = this.resize.bind(this)
     this.load = this.load.bind(this)
   }
+  componentWillMount() {
+    if (!this.props.image) {
+      this.props.setDefaultBg({
+        image,
+        video
+      })
+    }
+    this.load()
+    this.resize()
+  }
   componentDidMount() {
     addResizeListener(this.resize)
-    this.resize()
-    this.load()
   }
   componentWillUnmount() {
     removeResizeListener(this.resize)
   }
+  shouldComponentUpdate() {
+    if (this.state.src.image) {
+      return false
+    } else {
+      return true
+    }
+  }
+  componentDidUpdate() {
+    this.load()
+  }
   load() {
+    if (!this.props.image || this.state.src.image) {
+      return
+    }
     let $bg = new Image()
     $bg.addEventListener('load', () => {
       this.setState({
         src: {
           image: this.props.image,
-          video: this.props.video
+          vidoe: this.props.video
         }
       })
       $bg = null

@@ -1,6 +1,17 @@
-export const router = (state, action) => {
+const bg = (state = {
+  bg: {
+    image: null,
+    video: null
+  }
+}, action) => {
   switch (action.type) {
-    case 'ROUTER':
+    case 'SET_BG':
+      return {
+        bg: action.bg
+      }
+    default:
       return state
   }
 }
+
+export default bg
