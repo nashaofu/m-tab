@@ -1,17 +1,5 @@
-const bg = (state = {
-  bg: {
-    image: null,
-    video: null
-  }
-}, action) => {
-  switch (action.type) {
-    case 'SET_BG':
-      return {
-        bg: action.bg
-      }
-    default:
-      return state
-  }
-}
+import view from './view'
 
-export default bg
+export default (state = {}, actions) => ({
+  view: view(state.view, actions)
+})

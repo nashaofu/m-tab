@@ -25,6 +25,8 @@
     "unlimitedStorage",
     "http://*/",
     "https://*/",
-    "chrome://favicon/"
+    "chrome://apps/",
+    "chrome://bookmarks/",
+    "chrome://history/"
   ]
 }

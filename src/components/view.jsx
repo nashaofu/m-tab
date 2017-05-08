@@ -49,25 +49,19 @@ export default class View extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      src: {
-        image: null,
-        video: null
-      },
+      loading: false,
       width: 0,
       height: 0
     }
-
+    this.$bgimg = null
     this.resize = this.resize.bind(this)
     this.load = this.load.bind(this)
   }
   componentWillMount() {
     if (!this.props.image) {
-      this.props.setDefaultBg({
-        image,
-        video
-      })
+      this.props.setViewImage(image)
     }
-    this.load()
+    this.load(this.props)
     this.resize()
   }
   componentDidMount() {
@@ -76,31 +70,31 @@ export default class View extends Component {
   componentWillUnmount() {
     removeResizeListener(this.resize)
   }
-  shouldComponentUpdate() {
-    if (this.state.src.image) {
-      return false
-    } else {
-      return true
-    }
-  }
-  componentDidUpdate() {
-    this.load()
-  }
-  load() {
-    if (!this.props.image || this.state.src.image) {
+  componentWillReceiveProps(props) {
+    if (this.props.image === props.image) {
       return
     }
-    let $bg = new Image()
-    $bg.addEventListener('load', () => {
-      this.setState({
-        src: {
-          image: this.props.image,
-          vidoe: this.props.video
-        }
-      })
-      $bg = null
+    this.setState({
+      loading: true
     })
-    $bg.src = this.props.image
+    this.load(props)
+  }
+  load(props) {
+    if (!props.image) {
+      return
+    }
+    this.$bgimg = new Image()
+
+    this.$bgimg.addEventListener('load', () => {
+      if (this.props.image === image) {
+        this.props.setViewVideo(video)
+      }
+      this.setState({
+        loading: false
+      })
+      this.$bgimg = null
+    })
+    this.$bgimg.src = props.image
   }
   resize() {
     let width = window.innerWidth
@@ -134,19 +128,19 @@ export default class View extends Component {
         ...containerStyle
       }
     }
-    if (this.state.src.image) {
-      style.image.backgroundImage = `url(${this.state.src.image})`
+    if (!this.state.loading) {
+      style.image.backgroundImage = `url(${this.props.image})`
       style.image.opacity = 1
-    }
-    if (this.state.src.video) {
-      style.video.opacity = 1
+      if (this.props.video) {
+        style.video.opacity = 1
+      }
     }
     return (
       <div style={style.view}>
         <div style={style.image} />
         <video
           style={style.video}
-          src={this.state.src.video}
+          src={this.props.video}
           autoPlay
           loop
         />
