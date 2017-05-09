@@ -1,5 +1,7 @@
 const setViewImage = (state, action) => {
   switch (action.type) {
+    case 'SET_VIEW':
+      return action.view.image
     case 'SET_VIEW_IMAGE':
       return action.image
     default:
@@ -9,6 +11,8 @@ const setViewImage = (state, action) => {
 
 const setViewVideo = (state, action) => {
   switch (action.type) {
+    case 'SET_VIEW':
+      return action.view.video
     case 'SET_VIEW_VIDEO':
       return action.video
     default:

@@ -1,9 +1,6 @@
 import React, { Component } from 'react'
 import { addResizeListener, removeResizeListener } from '../js/resize'
 
-import image from '../images/bg.jpg'
-import video from '../video/bg.mp4'
-
 const viewStyle = {
   position: 'absolute',
   top: 0,
@@ -53,15 +50,12 @@ export default class View extends Component {
       width: 0,
       height: 0
     }
-    this.$bgimg = null
+    this.$bgimg = new Image()
     this.resize = this.resize.bind(this)
-    this.load = this.load.bind(this)
   }
   componentWillMount() {
-    if (!this.props.image) {
-      this.props.setViewImage(image)
-    }
-    this.load(this.props)
+    this.bindImageLoadEvent()
+    this.preLoadImage(this.props.image)
     this.resize()
   }
   componentDidMount() {
@@ -70,31 +64,27 @@ export default class View extends Component {
   componentWillUnmount() {
     removeResizeListener(this.resize)
   }
-  componentWillReceiveProps(props) {
-    if (this.props.image === props.image) {
+  componentWillReceiveProps({ image }) {
+    if (this.props.image === image) {
+      return
+    }
+    this.preLoadImage(image)
+  }
+  bindImageLoadEvent() {
+    this.$bgimg.addEventListener('load', () => {
+      this.setState({
+        loading: false
+      })
+    })
+  }
+  preLoadImage(image) {
+    if (typeof image !== 'string') {
       return
     }
     this.setState({
       loading: true
     })
-    this.load(props)
-  }
-  load(props) {
-    if (!props.image) {
-      return
-    }
-    this.$bgimg = new Image()
-
-    this.$bgimg.addEventListener('load', () => {
-      if (this.props.image === image) {
-        this.props.setViewVideo(video)
-      }
-      this.setState({
-        loading: false
-      })
-      this.$bgimg = null
-    })
-    this.$bgimg.src = props.image
+    this.$bgimg.src = image
   }
   resize() {
     let width = window.innerWidth
@@ -128,6 +118,7 @@ export default class View extends Component {
         ...containerStyle
       }
     }
+    console.log(this.state)
     if (!this.state.loading) {
       style.image.backgroundImage = `url(${this.props.image})`
       style.image.opacity = 1

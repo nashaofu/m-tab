@@ -1,15 +1,16 @@
 import { connect } from 'react-redux'
 import View from '../components/View'
-import { setViewImage, setViewVideo } from '../actions'
+import { setView, setViewImage, setViewVideo } from '../actions'
 
 const mapStateToProps = (state, props) => {
-  return {
-    ...state.view
-  }
+  return state.view
 }
 
 const mapDispatchToProps = (dispatch, props) => {
   return {
+    setView(view) {
+      dispatch(setView(view))
+    },
     setViewImage(image) {
       dispatch(setViewImage(image))
     },

@@ -1,5 +1,7 @@
-import view from './view'
+import setView from './setView'
+import links from './links'
 
 export default (state = {}, actions) => ({
-  view: view(state.view, actions)
+  view: setView(state.view, actions),
+  links: links(state.links, actions)
 })
