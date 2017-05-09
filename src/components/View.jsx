@@ -118,7 +118,6 @@ export default class View extends Component {
         ...containerStyle
       }
     }
-    console.log(this.state)
     if (!this.state.loading) {
       style.image.backgroundImage = `url(${this.props.image})`
       style.image.opacity = 1
@@ -131,7 +130,7 @@ export default class View extends Component {
         <div style={style.image} />
         <video
           style={style.video}
-          src={this.props.video}
+          src={this.state.loading ? null : this.props.video}
           autoPlay
           loop
         />
