@@ -134,7 +134,9 @@ export default class View extends Component {
           autoPlay
           loop
         />
-        <div style={style.container}>
+        <div style={style.container} onClick={e => {
+          this.props.setView({ image: 'http://cn.bing.com/az/hprichbg/rb/MorskieOko_ZH-CN8809175725_1920x1080.jpg' })
+        }}>
           {this.props.children}
         </div>
       </div>

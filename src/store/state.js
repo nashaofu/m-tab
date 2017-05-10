@@ -1,5 +1,5 @@
-import image from './images/bg.jpg'
-import video from './video/bg.mp4'
+import image from '../images/bg.jpg'
+import video from '../video/bg.mp4'
 
 const links = [
   {
