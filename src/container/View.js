@@ -9,6 +9,11 @@ const mapStateToProps = (state, props) => {
 const mapDispatchToProps = (dispatch, props) => {
   return {
     setView(view) {
+      if (typeof view === 'string') {
+        view = {
+          image: view
+        }
+      }
       dispatch(setView(view))
     },
     setViewImage(image) {

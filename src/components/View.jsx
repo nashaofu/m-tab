@@ -43,6 +43,8 @@ export default class View extends Component {
     super(props)
     this.state = {
       loading: false,
+      prevImage: null,
+      prevVideo: null,
       width: 0,
       height: 0
     }
@@ -70,7 +72,9 @@ export default class View extends Component {
   bindImageLoadEvent() {
     this.$bgimg.addEventListener('load', () => {
       this.setState({
-        loading: false
+        loading: false,
+        prevImage: this.props.image,
+        prevVideo: this.props.video
       })
     })
   }
@@ -97,9 +101,9 @@ export default class View extends Component {
     })
   }
   changeImage() {
-    const number = Math.ceil(Math.random() * 4050)
-    const src = `http://img.infinitynewtab.com/wallpaper/${number}.jpg`
-    this.props.setView({ image: src })
+    const id = Math.ceil(Math.random() * 4050)
+    const image = `http://img.infinitynewtab.com/wallpaper/${id}.jpg`
+    this.props.setView(image)
   }
   render() {
     const style = {
@@ -135,6 +139,21 @@ export default class View extends Component {
           className='animated fadeIn'
           style={style.video}
           src={this.props.video}
+          autoPlay={true}
+          loop={true}
+        />
+      }
+    } else {
+      image = <div
+        style={{
+          ...style.image,
+          backgroundImage: `url(${this.state.prevImage})`
+        }}
+      />
+      if (this.state.prevVideo) {
+        video = <video
+          style={style.video}
+          src={this.state.prevVideo}
           autoPlay={true}
           loop={true}
         />
