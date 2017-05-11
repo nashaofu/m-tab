@@ -17,9 +17,7 @@ const imageStyle = {
   left: 0,
   backgroundSize: 'cover',
   minWidth: '100%',
-  minHeight: '100%',
-  opacity: 0,
-  transition: 'opacity 0.5s cubic-bezier(0,0.3,1,0)'
+  minHeight: '100%'
 }
 
 const videoStyle = {
@@ -27,9 +25,7 @@ const videoStyle = {
   top: 0,
   left: 0,
   minWidth: '100%',
-  minHeight: '100%',
-  opacity: 0,
-  transition: 'opacity 0.3s cubic-bezier(0,0.3,1,0) 0.4s'
+  minHeight: '100%'
 }
 
 const containerStyle = {
@@ -52,6 +48,7 @@ export default class View extends Component {
     }
     this.$bgimg = new Image()
     this.resize = this.resize.bind(this)
+    this.changeImage = this.changeImage.bind(this)
   }
   componentWillMount() {
     this.bindImageLoadEvent()
@@ -99,6 +96,11 @@ export default class View extends Component {
       height: height
     })
   }
+  changeImage() {
+    const number = Math.ceil(Math.random() * 4050)
+    const src = `http://img.infinitynewtab.com/wallpaper/${number}.jpg`
+    this.props.setView({ image: src })
+  }
   render() {
     const style = {
       image: {
@@ -118,25 +120,31 @@ export default class View extends Component {
         ...containerStyle
       }
     }
-    if (!this.state.loading) {
-      style.image.backgroundImage = `url(${this.props.image})`
-      style.image.opacity = 1
+    let image = null
+    let video = null
+    if (!this.state.loading && this.props.image) {
+      image = <div
+        className='animated fadeIn'
+        style={{
+          ...style.image,
+          backgroundImage: `url(${this.props.image})`
+        }}
+      />
       if (this.props.video) {
-        style.video.opacity = 1
+        video = <video
+          className='animated fadeIn'
+          style={style.video}
+          src={this.props.video}
+          autoPlay={true}
+          loop={true}
+        />
       }
     }
     return (
       <div style={style.view}>
-        <div style={style.image} />
-        <video
-          style={style.video}
-          src={this.state.loading ? null : this.props.video}
-          autoPlay
-          loop
-        />
-        <div style={style.container} onClick={e => {
-          this.props.setView({ image: 'http://cn.bing.com/az/hprichbg/rb/MorskieOko_ZH-CN8809175725_1920x1080.jpg' })
-        }}>
+        {image}
+        {video}
+        <div style={style.container} onClick={this.changeImage}>
           {this.props.children}
         </div>
       </div>

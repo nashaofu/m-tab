@@ -1,80 +1,57 @@
 import React, { Component } from 'react'
+import Paper from 'material-ui/Paper'
 import TextField from 'material-ui/TextField'
 
-import { addResizeListener, removeResizeListener } from '../js/resize'
-
 const searchStyle = {
+  display: 'flex',
   position: 'absolute',
+  top: 0,
   right: 0,
+  bottom: 0,
   left: 0,
-  textAlign: 'center'
+  zIndex: 1000,
+  alignItems: 'center'
 }
 
-const textFieldStyle = {
-  width: 360,
+const containerStyle = {
+  width: 400,
   maxWidth: '100%',
-  margin: '0 auto'
+  margin: '0 auto',
+  padding: 48,
+  backgroundColor: 'rgba(255,255,255,0.88)',
+  borderRadius: 7
+}
+
+const maskStyle = {
+  position: 'absolute',
+  top: 0,
+  right: 0,
+  bottom: 0,
+  left: 0,
+  backgroundColor: 'rgba(77,77,77,0.3)'
 }
 
 const hintStyle = {
-  color: 'rgba(255,255,255,0.7)',
   width: '100%',
   textAlign: 'center'
 }
 
 const inputStyle = {
-  color: '#fff',
   textAlign: 'center'
 }
 
-const underlineFocusStyle = {
-  borderBottomColor: '#fff'
-}
-
 export default class View extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {
-      top: null,
-      value: '',
-      engine: 'Google',
-      engines: {
-        'Baidu': {
-          'url': 'https://www.baidu.com/s?wd='
-        },
-        'Google': {
-          'url': 'https://www.google.com/search?q='
-        },
-        'Bing': {
-          'url': 'https://www.bing.com/search?q=s'
-        }
-      }
+      value: ''
     }
     this.change = this.change.bind(this)
     this.keyDown = this.keyDown.bind(this)
-    this.resize = this.resize.bind(this)
+    this.close = this.close.bind(this)
   }
-  componentDidMount() {
-    addResizeListener(this.resize)
-    this.resize()
-  }
-  componentWillUnmount() {
-    removeResizeListener(this.resize)
-  }
-  resize() {
-    if (window.innerWidth < 420) {
-      this.setState({
-        top: '10%'
-      })
-    } else if (window.innerWidth < 960) {
-      this.setState({
-        top: '14%'
-      })
-    } else {
-      this.setState({
-        top: '24%'
-      })
-    }
+  close() {
+    this.props.close()
   }
   change(proxy, value) {
     this.setState({
@@ -83,42 +60,57 @@ export default class View extends Component {
   }
   keyDown(proxy, event) {
     if (proxy.keyCode === 13) {
-      const engine = this.state.engines[this.state.engine]
-      window.location.href = `${engine.url}${this.state.value}`
+      window.location.href = `${this.props.engine}${this.state.value}`
     }
   }
   render() {
     const style = {
       search: {
-        ...searchStyle,
-        top: this.state.top
+        ...searchStyle
       },
-      textField: {
-        ...textFieldStyle
+      container: {
+        ...containerStyle
+      },
+      mask: {
+        ...maskStyle
       },
       input: {
         ...inputStyle
       },
       hint: {
         ...hintStyle
-      },
-      underlineFocus: {
-        ...underlineFocusStyle
       }
     }
+
+    if (!this.props.open) {
+      return null
+    }
+
     return (
-      <div style={style.search}>
-        <TextField
-          hintText="回车进行搜索"
-          type="search"
-          style={style.textField}
-          inputStyle={style.input}
-          hintStyle={style.hint}
-          underlineFocusStyle={style.underlineFocus}
-          onChange={this.change}
-          onKeyDown={this.keyDown}
-          value={this.state.value}
-        />
+      <div
+        style={style.search}
+      >
+        <div
+          className="animated fadeIn"
+          style={style.mask}
+          onClick={this.close}
+        ></div>
+        <Paper
+          className="animated fadeIn"
+          zDepth={5}
+          style={style.container}
+        >
+          <TextField
+            hintText="回车进行搜索"
+            type="search"
+            fullWidth={true}
+            inputStyle={style.input}
+            hintStyle={style.hint}
+            onChange={this.change}
+            onKeyDown={this.keyDown}
+            value={this.state.value}
+          />
+        </Paper>
       </div>
     )
   }

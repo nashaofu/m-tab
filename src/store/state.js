@@ -40,10 +40,26 @@ const links = [
   }
 ]
 
+const search = {
+  engines: {
+    'Baidu': {
+      'url': 'https://www.baidu.com/s?wd='
+    },
+    'Google': {
+      'url': 'https://www.google.com/search?q='
+    },
+    'Bing': {
+      'url': 'https://www.bing.com/search?q=s'
+    }
+  },
+  engine: 'Google'
+}
+
 export default {
   view: {
     image,
     video
   },
-  links
+  links,
+  search
 }

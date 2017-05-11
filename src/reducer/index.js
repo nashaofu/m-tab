@@ -1,7 +1,9 @@
 import setView from './setView'
-import links from './links'
+import setLinks from './setLinks'
+import setSearch from './setSearch'
 
-export default (state = {}, actions) => ({
-  view: setView(state.view, actions),
-  links: links(state.links, actions)
+export default (state = {}, action) => ({
+  view: setView(state.view, action),
+  links: setLinks(state.links, action),
+  search: setSearch(state.search, action)
 })
