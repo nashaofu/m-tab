@@ -21,6 +21,7 @@
   "permissions": [
     "management",
     "bookmarks",
+    "tabs",
     "history",
     "unlimitedStorage",
     "http://*/",
