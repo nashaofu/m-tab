@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import LinearProgress from 'material-ui/LinearProgress'
 import { addResizeListener, removeResizeListener } from '../js/resize'
 
 const viewStyle = {
@@ -8,7 +9,7 @@ const viewStyle = {
   bottom: 0,
   left: 0,
   overflow: 'hidden',
-  backgroundColor: '#666'
+  backgroundColor: '#ffeee0'
 }
 
 const imageStyle = {
@@ -28,6 +29,14 @@ const videoStyle = {
   minHeight: '100%'
 }
 
+const progressStyle = {
+  position: 'absolute',
+  bottom: 0,
+  right: 0,
+  left: 0,
+  backgroundColor: 'rgba(0,0,0,0.4)'
+}
+
 const containerStyle = {
   display: 'flex',
   flexDirection: 'column',
@@ -42,7 +51,6 @@ export default class View extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      loading: false,
       prevImage: null,
       prevVideo: null,
       width: 0,
@@ -71,20 +79,21 @@ export default class View extends Component {
   }
   bindImageLoadEvent() {
     this.$bgimg.addEventListener('load', () => {
+      this.props.setViewStatus('success')
       this.setState({
-        loading: false,
         prevImage: this.props.image,
         prevVideo: this.props.video
       })
+    })
+    this.$bgimg.addEventListener('error', () => {
+      this.props.setViewStatus('fail')
     })
   }
   preLoadImage(image) {
     if (typeof image !== 'string') {
       return
     }
-    this.setState({
-      loading: true
-    })
+    this.props.setViewStatus('pending')
     this.$bgimg.src = image
   }
   resize() {
@@ -100,7 +109,17 @@ export default class View extends Component {
       height: height
     })
   }
+  autoplay() {
+    if (this.props.autoplay) {
+      setTimeout(() => {
+        this.changeImage()
+      }, 10000)
+    }
+  }
   changeImage() {
+    if (this.props.status === 'pending') {
+      return
+    }
     const id = Math.ceil(Math.random() * 4050)
     const image = `http://img.infinitynewtab.com/wallpaper/${id}.jpg`
     this.props.setView(image)
@@ -120,49 +139,78 @@ export default class View extends Component {
       view: {
         ...viewStyle
       },
+      progress: {
+        ...progressStyle
+      },
       container: {
         ...containerStyle
       }
     }
     let image = null
     let video = null
-    if (!this.state.loading && this.props.image) {
-      image = <div
-        className='animated fadeIn'
-        style={{
-          ...style.image,
-          backgroundImage: `url(${this.props.image})`
-        }}
-      />
-      if (this.props.video) {
-        video = <video
+    let progress = null
+    switch (this.props.status) {
+      case 'pending':
+        image = <div
+          style={{
+            ...style.image,
+            backgroundImage: `url(${this.state.prevImage})`
+          }}
+        />
+        if (this.state.prevVideo) {
+          video = <video
+            style={style.video}
+            src={this.state.prevVideo}
+            autoPlay={true}
+            loop={true}
+          />
+        }
+        progress = <LinearProgress
+          color="rgba(255,255,0,0.5)"
+          style={style.progress}
+        />
+        break
+      case 'success':
+        image = <div
           className='animated fadeIn'
-          style={style.video}
-          src={this.props.video}
-          autoPlay={true}
-          loop={true}
+          style={{
+            ...style.image,
+            backgroundImage: `url(${this.props.image})`
+          }}
         />
-      }
-    } else {
-      image = <div
-        style={{
-          ...style.image,
-          backgroundImage: `url(${this.state.prevImage})`
-        }}
-      />
-      if (this.state.prevVideo) {
-        video = <video
-          style={style.video}
-          src={this.state.prevVideo}
-          autoPlay={true}
-          loop={true}
+        if (this.props.video) {
+          video = <video
+            className='animated fadeIn'
+            style={style.video}
+            src={this.props.video}
+            autoPlay={true}
+            loop={true}
+          />
+        }
+        break
+      case 'fail':
+      default:
+        image = <div
+          style={{
+            ...style.image,
+            backgroundImage: `url(${this.state.prevImage})`
+          }}
         />
-      }
+        if (this.state.prevVideo) {
+          video = <video
+            style={style.video}
+            src={this.state.prevVideo}
+            autoPlay={true}
+            loop={true}
+          />
+        }
+        break
     }
     return (
       <div style={style.view}>
         {image}
         {video}
+        {progress}
         <div style={style.container} onClick={this.changeImage}>
           {this.props.children}
         </div>

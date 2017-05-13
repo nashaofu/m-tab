@@ -1,8 +1,9 @@
-export const setView = ({ image, video }) => ({
+export const setView = ({ image, video, status }) => ({
   type: 'SET_VIEW',
   view: {
     image,
-    video
+    video,
+    status
   }
 })
 
@@ -14,4 +15,14 @@ export const setViewImage = (image) => ({
 export const setViewVideo = (video) => ({
   type: 'SET_VIEW_VIDEO',
   video
+})
+
+export const setViewAutoplay = (autoplay) => ({
+  type: 'SET_VIEW_AUTOPLAY',
+  autoplay
+})
+
+export const setViewStatus = (status) => ({
+  type: 'SET_VIEW_STATUS',
+  status
 })

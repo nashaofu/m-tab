@@ -1,26 +1,33 @@
-const setViewImage = (state, action) => {
+const ACTION_TYPES = {
+  SET_VIEW_IMAGE: 'image',
+  SET_VIEW_VIDEO: 'video',
+  SET_VIEW_AUTOPLAY: 'autoplay',
+  SET_VIEW_STATUS: 'status'
+}
+
+export default (state = {}, action) => {
   switch (action.type) {
     case 'SET_VIEW':
-      return action.view.image
+      const { image, video, status } = action.view
+      return {
+        ...state,
+        image,
+        video,
+        status
+      }
     case 'SET_VIEW_IMAGE':
-      return action.image
-    default:
-      return state
-  }
-}
-
-const setViewVideo = (state, action) => {
-  switch (action.type) {
-    case 'SET_VIEW':
-      return action.view.video
     case 'SET_VIEW_VIDEO':
-      return action.video
+    case 'SET_VIEW_AUTOPLAY':
+    case 'SET_VIEW_STATUS':
+      const key = ACTION_TYPES[action.type]
+      if (typeof key !== 'string') {
+        throw new Error('Expected key to be a string.')
+      }
+      return {
+        ...state,
+        [key]: action[key]
+      }
     default:
       return state
   }
 }
-
-export default (view = {}, action) => ({
-  image: setViewImage(view.image, action),
-  video: setViewVideo(view.video, action)
-})
