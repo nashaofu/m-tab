@@ -1,5 +1,6 @@
 import image from '../images/bg.jpg'
 import video from '../video/bg.mp4'
+import animate from '../js/animate.json'
 
 const links = [
   {
@@ -58,8 +59,11 @@ const search = {
 export default {
   view: {
     image,
-    video
+    video,
+    autoplay: 10000,
+    status: 'pending',
+    animate
   },
   links,
-  search
+  search,
 }

@@ -51,11 +51,18 @@ export default class View extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      prevImage: null,
-      prevVideo: null,
+      // 背景图历史记录
+      history: [],
+      // 当前动画效果
+      animate: {
+        in: null,
+        out: null
+      },
       width: 0,
       height: 0
     }
+    // 自动切换背景定时
+    this.autoplayTimer = null
     this.$bgimg = new Image()
     this.resize = this.resize.bind(this)
     this.changeImage = this.changeImage.bind(this)
@@ -79,15 +86,32 @@ export default class View extends Component {
   }
   bindImageLoadEvent() {
     this.$bgimg.addEventListener('load', () => {
-      this.props.setViewStatus('success')
+      const animate = Math.round(Math.random() * this.props.animate.length)
       this.setState({
-        prevImage: this.props.image,
-        prevVideo: this.props.video
+        animate: this.props.animate[animate]
       })
+      this.props.setViewStatus('success')
+      this.push(this.props)
+      this.autoplay()
     })
     this.$bgimg.addEventListener('error', () => {
       this.props.setViewStatus('fail')
     })
+  }
+  push({ image, video }) {
+    this.setState({
+      history: [
+        {
+          image,
+          video
+        },
+        ...this.state.history
+      ]
+    })
+  }
+  getHistory() {
+    const history = this.state.history
+    return history[1] || history[0] || {}
   }
   preLoadImage(image) {
     if (typeof image !== 'string') {
@@ -111,9 +135,10 @@ export default class View extends Component {
   }
   autoplay() {
     if (this.props.autoplay) {
-      setTimeout(() => {
+      clearTimeout(this.autoplayTimer)
+      this.autoplayTimer = setTimeout(() => {
         this.changeImage()
-      }, 10000)
+      }, this.props.autoplay)
     }
   }
   changeImage() {
@@ -126,92 +151,115 @@ export default class View extends Component {
   }
   render() {
     const style = {
-      image: {
-        ...imageStyle,
-        width: `${this.state.width}px`,
-        height: `${this.state.height}px`
-      },
-      video: {
-        ...videoStyle,
-        width: `${this.state.width}px`,
-        height: `${this.state.height}px`
-      },
       view: {
         ...viewStyle
-      },
-      progress: {
-        ...progressStyle
       },
       container: {
         ...containerStyle
       }
     }
-    let image = null
-    let video = null
-    let progress = null
+    const prevImage = {
+      show: true,
+      attr: {
+        style: {
+          ...imageStyle,
+          width: `${this.state.width}px`,
+          height: `${this.state.height}px`
+        }
+      },
+      render() {
+        if (!this.show) {
+          return
+        }
+        return <div {...this.attr} />
+      }
+    }
+    const image = {
+      show: true,
+      attr: {
+        style: {
+          ...imageStyle,
+          width: `${this.state.width}px`,
+          height: `${this.state.height}px`
+        }
+      },
+      render() {
+        if (!this.show) {
+          return
+        }
+        return <div {...this.attr} />
+      }
+    }
+    const video = {
+      show: false,
+      attr: {
+        style: {
+          ...videoStyle,
+          width: `${this.state.width}px`,
+          height: `${this.state.height}px`
+        }
+      },
+      render() {
+        if (!this.show) {
+          return
+        }
+        return <video autoPlay={true} loop={true} {...this.attr} />
+      }
+    }
+    const progress = {
+      show: false,
+      attr: {
+        style: progressStyle
+      },
+      render() {
+        if (!this.show) {
+          return
+        }
+        return <LinearProgress color="rgba(255,255,0,0.5)" {...this.attr} />
+      }
+    }
+    let history = {}
     switch (this.props.status) {
-      case 'pending':
-        image = <div
-          style={{
-            ...style.image,
-            backgroundImage: `url(${this.state.prevImage})`
-          }}
-        />
-        if (this.state.prevVideo) {
-          video = <video
-            style={style.video}
-            src={this.state.prevVideo}
-            autoPlay={true}
-            loop={true}
-          />
-        }
-        progress = <LinearProgress
-          color="rgba(255,255,0,0.5)"
-          style={style.progress}
-        />
-        break
       case 'success':
-        image = <div
-          className='animated fadeIn'
-          style={{
-            ...style.image,
-            backgroundImage: `url(${this.props.image})`
-          }}
-        />
+        history = this.state.history[1]
+        image.attr.style.backgroundImage = `url(${this.props.image})`
+        if (history) {
+          image.attr.className = `animated ${this.state.animate.in}`
+          prevImage.attr.style.backgroundImage = `url(${history.image})`
+          prevImage.attr.className = `animated ${this.state.animate.out}`
+        }
         if (this.props.video) {
-          video = <video
-            className='animated fadeIn'
-            style={style.video}
-            src={this.props.video}
-            autoPlay={true}
-            loop={true}
-          />
+          video.attr.src = this.props.video
+          if (history) {
+            video.className = `animated ${this.state.animate.in}`
+          }
+          video.show = true
         }
         break
+      case 'pending':
       case 'fail':
       default:
-        image = <div
-          style={{
-            ...style.image,
-            backgroundImage: `url(${this.state.prevImage})`
-          }}
-        />
-        if (this.state.prevVideo) {
-          video = <video
-            style={style.video}
-            src={this.state.prevVideo}
-            autoPlay={true}
-            loop={true}
-          />
+        if (this.props.status === 'pending') {
+          progress.show = true
+        }
+        history = this.state.history[0]
+        if (history) {
+          image.attr.style.backgroundImage = `url(${history.image})`
+          prevImage.attr.style.backgroundImage = `url(${history.image})`
+          if (history.video) {
+            video.attr.src = history.video
+            video.show = true
+          }
         }
         break
     }
     return (
       <div style={style.view}>
-        {image}
-        {video}
-        {progress}
-        <div style={style.container} onClick={this.changeImage}>
+        {prevImage.render()}
+        {image.render()}
+        {video.render()}
+        {progress.render()}
+        <div style={style.container}>
           {this.props.children}
         </div>
       </div>

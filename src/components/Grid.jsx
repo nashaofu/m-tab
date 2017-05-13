@@ -117,8 +117,10 @@ export default class View extends Component {
       })
     }
   }
-  click(proxy, icon) {
-    window.location.href = icon.url
+  click(proxy, link) {
+    window.chrome.tabs.update({
+      url: link.url
+    })
   }
   render() {
     const style = {
@@ -146,18 +148,18 @@ export default class View extends Component {
           padding={this.state.padding}
           style={style.gridList}
         >
-          {icons.map((icon, index) => (
+          {icons.map((link, index) => (
             <GridTile
-              key={`${icon.title}-${index}`}
-              title={icon.title}
+              key={`${link.title}-${index}`}
+              title={link.title}
               style={style.gridTile}
-              onClick={e => this.click(e, icon)}
+              onClick={e => this.click(e, link)}
             >
               <div style={style.icon}>
                 <i
                   className="material-icons"
                   style={style.iconFont}
-                >{icon.icon}</i>
+                >{link.icon}</i>
               </div>
             </GridTile>
           ))}
