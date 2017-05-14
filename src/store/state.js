@@ -22,21 +22,21 @@ const links = [
   },
   {
     id: 4,
+    title: '设置',
+    icon: 'settings',
+    url: 'chrome://settings/'
+  },
+  {
+    id: 5,
     title: '历史记录',
     icon: 'history',
     url: 'chrome://history/'
   },
   {
-    id: 5,
+    id: 6,
     title: '下载',
     icon: 'file_download',
     url: 'chrome://downloads/'
-  },
-  {
-    id: 6,
-    title: '搜索',
-    icon: 'search',
-    url: 'https://www.baidu.com'
   }
 ]
 

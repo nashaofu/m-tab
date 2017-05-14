@@ -2,39 +2,6 @@ import React, { Component } from 'react'
 import { GridList, GridTile } from 'material-ui/GridList'
 import { addResizeListener, removeResizeListener } from '../js/resize'
 
-const icons = [
-  {
-    title: '应用商店',
-    icon: 'local_grocery_store',
-    url: 'https://chrome.google.com/webstore'
-  },
-  {
-    title: '应用',
-    icon: 'apps',
-    url: 'chrome://apps/'
-  },
-  {
-    title: '书签',
-    icon: 'bookmark',
-    url: 'chrome://bookmarks/'
-  },
-  {
-    title: '历史记录',
-    icon: 'history',
-    url: 'chrome://history/'
-  },
-  {
-    title: '下载',
-    icon: 'file_download',
-    url: 'chrome://downloads/'
-  },
-  {
-    title: '搜索',
-    icon: 'search',
-    url: '#'
-  }
-]
-
 const gridStyle = {
   display: 'flex',
   flexGrow: 1,
@@ -70,8 +37,8 @@ const iconFontStyle = {
 }
 
 export default class View extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {
       cols: null,
       padding: null
@@ -146,7 +113,7 @@ export default class View extends Component {
           padding={this.state.padding}
           style={style.gridList}
         >
-          {icons.map((link, index) => (
+          {this.props.links.map((link, index) => (
             <GridTile
               key={`${link.title}-${index}`}
               title={link.title}

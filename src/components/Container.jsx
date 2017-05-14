@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 import View from '../container/View'
-import Grid from '../components/Grid'
+import Grid from '../container/Grid'
 
 export default class Container extends Component {
   render() {
