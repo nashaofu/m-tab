@@ -8,7 +8,10 @@ import enhancer from './enhancer'
 let initState = localStorage.getItem('store')
 if (initState) {
   try {
-    initState = JSON.parse(initState)
+    initState = {
+      ...state,
+      ...JSON.parse(initState)
+    }
   } catch (e) {
     initState = state
   }

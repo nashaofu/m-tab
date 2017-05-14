@@ -76,8 +76,6 @@ export default class View extends Component {
       cols: null,
       padding: null
     }
-    this.resize = this.resize.bind(this)
-    this.click = this.click.bind(this)
   }
   componentDidMount() {
     addResizeListener(this.resize)
@@ -86,7 +84,7 @@ export default class View extends Component {
   componentWillUnmount() {
     removeResizeListener(this.resize)
   }
-  resize() {
+  resize = () => {
     if (window.innerWidth < 420) {
       this.setState({
         cols: 2
@@ -117,7 +115,7 @@ export default class View extends Component {
       })
     }
   }
-  click(proxy, link) {
+  click = (proxy, link) => {
     window.chrome.tabs.update({
       url: link.url
     })

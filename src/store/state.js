@@ -56,6 +56,13 @@ const search = {
   engine: 'Google'
 }
 
+const message = {
+  open: false,
+  message: '',
+  action: null,
+  delay: 5000
+}
+
 export default {
   view: {
     image,
@@ -66,4 +73,5 @@ export default {
   },
   links,
   search,
+  message
 }

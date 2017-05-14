@@ -5,7 +5,8 @@ import {
   setViewImage,
   setViewVideo,
   setViewAutoplay,
-  setViewStatus
+  setViewStatus,
+  setMessage
 } from '../actions'
 
 const mapStateToProps = (state, props) => {
@@ -35,6 +36,9 @@ const mapDispatchToProps = (dispatch, props) => {
     },
     setViewStatus(status) {
       dispatch(setViewStatus(status))
+    },
+    setMessage(message) {
+      dispatch(setMessage(message))
     }
   }
 }

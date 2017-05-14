@@ -46,19 +46,16 @@ export default class View extends Component {
     this.state = {
       value: ''
     }
-    this.change = this.change.bind(this)
-    this.keyDown = this.keyDown.bind(this)
-    this.close = this.close.bind(this)
   }
-  close() {
+  close = () => {
     this.props.close()
   }
-  change(proxy, value) {
+  change = (proxy, value) => {
     this.setState({
       value
     })
   }
-  keyDown(proxy, event) {
+  keyDown = (proxy, event) => {
     if (proxy.keyCode === 13) {
       window.location.href = `${this.props.engine}${this.state.value}`
     }

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import LinearProgress from 'material-ui/LinearProgress'
 import { addResizeListener, removeResizeListener } from '../js/resize'
+import Message from '../container/Message'
 
 const viewStyle = {
   position: 'absolute',
@@ -48,6 +49,9 @@ const containerStyle = {
 }
 
 export default class View extends Component {
+  // 自动切换背景定时
+  autoplayTimer = null
+  $bgimg = new Image()
   constructor(props) {
     super(props)
     this.state = {
@@ -61,11 +65,6 @@ export default class View extends Component {
       width: 0,
       height: 0
     }
-    // 自动切换背景定时
-    this.autoplayTimer = null
-    this.$bgimg = new Image()
-    this.resize = this.resize.bind(this)
-    this.changeImage = this.changeImage.bind(this)
   }
   componentWillMount() {
     this.bindImageLoadEvent()
@@ -82,45 +81,8 @@ export default class View extends Component {
     if (this.props.image === image) {
       return
     }
-    this.preLoadImage(image)
   }
-  bindImageLoadEvent() {
-    this.$bgimg.addEventListener('load', () => {
-      const animate = Math.round(Math.random() * this.props.animate.length)
-      this.setState({
-        animate: this.props.animate[animate]
-      })
-      this.props.setViewStatus('success')
-      this.push(this.props)
-      this.autoplay()
-    })
-    this.$bgimg.addEventListener('error', () => {
-      this.props.setViewStatus('fail')
-    })
-  }
-  push({ image, video }) {
-    this.setState({
-      history: [
-        {
-          image,
-          video
-        },
-        ...this.state.history
-      ]
-    })
-  }
-  getHistory() {
-    const history = this.state.history
-    return history[1] || history[0] || {}
-  }
-  preLoadImage(image) {
-    if (typeof image !== 'string') {
-      return
-    }
-    this.props.setViewStatus('pending')
-    this.$bgimg.src = image
-  }
-  resize() {
+  resize = () => {
     let width = window.innerWidth
     let height = window.innerHeight
     if (width / height < 1920 / 1080) {
@@ -133,21 +95,63 @@ export default class View extends Component {
       height: height
     })
   }
-  autoplay() {
+  bindImageLoadEvent = () => {
+    this.$bgimg.addEventListener('load', (e) => {
+      const animate = Math.floor(Math.random() * this.props.animate.length)
+      this.setState({
+        animate: this.props.animate[animate]
+      })
+      this.props.setView(this.$bgimg.src)
+      this.props.setViewStatus('success')
+      this.push(this.props)
+      this.autoplay()
+    })
+    this.$bgimg.addEventListener('error', () => {
+      this.props.setViewStatus('fail')
+      // this.props.setView(this.state.history[0])
+      this.props.setMessage({
+        open: true,
+        message: '图片加载失败,请检查网络连接'
+      })
+    })
+  }
+  preLoadImage = (image) => {
+    if (typeof image !== 'string') {
+      return
+    }
+    this.props.setViewStatus('pending')
+    this.$bgimg.src = image
+  }
+  push = ({ image, video }) => {
+    this.setState({
+      history: [
+        {
+          image,
+          video
+        },
+        ...this.state.history
+      ]
+    })
+  }
+  getHistory = () => {
+    const history = this.state.history
+    return history[1] || history[0] || {}
+  }
+  autoplay = () => {
     if (this.props.autoplay) {
       clearTimeout(this.autoplayTimer)
       this.autoplayTimer = setTimeout(() => {
         this.changeImage()
-      }, this.props.autoplay)
+      }, 2000)
     }
   }
-  changeImage() {
+  changeImage = () => {
     if (this.props.status === 'pending') {
       return
     }
     const id = Math.ceil(Math.random() * 4050)
     const image = `http://img.infinitynewtab.com/wallpaper/${id}.jpg`
-    this.props.setView(image)
+    this.preLoadImage(image)
   }
   render() {
     const style = {
@@ -262,6 +266,7 @@ export default class View extends Component {
         <div style={style.container}>
           {this.props.children}
         </div>
+        <Message />
       </div>
     )
   }

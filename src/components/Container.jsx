@@ -13,9 +13,8 @@ export default class Container extends Component {
         engine: 1
       }
     }
-    this.closeSearch = this.closeSearch.bind(this)
   }
-  closeSearch() {
+  closeSearch = () => {
     const search = this.state.search
     this.setState({
       search: {

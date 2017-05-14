@@ -13,6 +13,7 @@
     "animate.css": "^3.5.2",
     "lodash": "^4.17.4",
     "material-ui": "^0.18.0",
+    "md5": "^2.2.1",
     "normalize.css": "^7.0.0",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",

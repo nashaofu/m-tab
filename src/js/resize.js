@@ -1,3 +1,5 @@
+import md5 from 'md5'
+
 let resizeListener = []
 
 window.addEventListener('resize', function (e) {
@@ -14,7 +16,7 @@ export function addResizeListener(callback) {
     throw new TypeError('callback is not Function')
   }
   resizeListener.push({
-    name: callback.name || callback.toString(),
+    name: md5(callback),
     callback: callback
   })
 }
@@ -25,7 +27,7 @@ export function removeResizeListener(callback) {
     throw new TypeError('callback is not Function')
   }
   resizeListener = resizeListener.filter(item => {
-    const name = callback.name || callback.toString()
+    const name = md5(callback)
     if (item.name !== name) {
       return true
     }
