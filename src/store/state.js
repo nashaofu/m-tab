@@ -1,5 +1,4 @@
 import image from '../images/bg.jpg'
-import video from '../video/bg.mp4'
 import animate from '../js/animate.json'
 
 const links = [
@@ -37,24 +36,9 @@ const links = [
     id: 6,
     title: '搜索',
     icon: 'search',
-    url: '#'
+    url: 'https://www.baidu.com'
   }
 ]
-
-const search = {
-  engines: {
-    'Baidu': {
-      'url': 'https://www.baidu.com/s?wd='
-    },
-    'Google': {
-      'url': 'https://www.google.com/search?q='
-    },
-    'Bing': {
-      'url': 'https://www.bing.com/search?q=s'
-    }
-  },
-  engine: 'Google'
-}
 
 const message = {
   open: false,
@@ -66,12 +50,10 @@ const message = {
 export default {
   view: {
     image,
-    video,
     autoplay: 10000,
     status: 'pending',
     animate
   },
   links,
-  search,
   message
 }

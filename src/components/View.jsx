@@ -111,7 +111,7 @@ export default class View extends Component {
       // this.props.setView(this.state.history[0])
       this.props.setMessage({
         open: true,
-        message: '图片加载失败,请检查网络连接'
+        message: '图片加载失败,请检查网络连接!'
       })
     })
   }
@@ -142,7 +142,7 @@ export default class View extends Component {
       clearTimeout(this.autoplayTimer)
       this.autoplayTimer = setTimeout(() => {
         this.changeImage()
-      }, 2000)
+      }, this.props.autoplay)
     }
   }
   changeImage = () => {
