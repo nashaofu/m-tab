@@ -1,6 +1,6 @@
 {
   "manifest_version": 2,
-  "name": "nsf-tab",
+  "name": "m-tab",
   "version": "0.1.0",
   "description": "新标签页美化插件，material风格，好看的背景图片，炫酷的背景切换效果。",
   "icons": {
