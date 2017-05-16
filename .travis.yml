@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+  - "node"
+
+install:
+  - yarn install
+
+script:
+  - yarn build
+
+branches:
+  only:
+    - master
