@@ -1,4 +1,4 @@
-# m-tab
+# m-tab[![Build Status](https://travis-ci.org/diaocheng/m-tab.svg?branch=master)](https://travis-ci.org/diaocheng/m-tab)
 > a new tab extension for chorme
 
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
